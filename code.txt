@@ -1,0 +1,5 @@
+Var x;
+Var y;
+Input x;
+Set y x*3-4;
+Print y;

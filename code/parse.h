@@ -43,7 +43,7 @@ StringVector parse_string(const char* line) {
             tokenized.start[tokenized.size - 1][last_tokenized_size] = *letter_ptr;
             tokenized.start[tokenized.size - 1][last_tokenized_size + 1] = '\0';
         } else {
-            if (tokenized.size > 0 && (tokenized.start[tokenized.size - 1][0] == ' ' || tokenized.start[tokenized.size - 1][0] == '\n' || tokenized.start[tokenized.size - 1][0] == ';'))
+            if (tokenized.size > 0 && (tokenized.start[tokenized.size - 1][0] == ' ' || tokenized.start[tokenized.size - 1][0] == '\n')) // || tokenized.start[tokenized.size - 1][0] == ';'))
                 SVDeleteItem(&tokenized, tokenized.size - 1);
 
             //char* strdup_token = strdup(token);

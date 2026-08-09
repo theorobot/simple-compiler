@@ -106,7 +106,17 @@ NodeAST* ShuntingYardAST(NodeTypes* o, StringVector* tokens) {
 			break;
 			}
 		case function:
-			if (tokens->start[i][0] == '(') {
+            if (tokens->start[i][0] == ';') {
+                while (sp > op_stack) {
+                    Token functionToken = *(sp-1);
+                    NodeAST* newfunctionAST = (NodeAST*)malloc(sizeof(NodeAST));
+                    newfunctionAST->type = function;
+                    newfunctionAST->data.func.type = GetFunctionNum((*(sp-1)).name);
+                    AddFuncToAST(r, newfunctionAST);
+                    sp--;
+                }
+            }
+            else if (tokens->start[i][0] == '(') {
 				*sp = (Token){function, "("};
 				sp++;
 			} else if (tokens->start[i][0] == ')') {

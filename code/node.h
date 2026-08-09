@@ -42,6 +42,8 @@ FunctionTypes GetFunctionNum(char* name) {
 		return subn;
 	case '*':
 		return muln;
+    case '=':
+        return set;
 	default:
 		return divn;
 	}

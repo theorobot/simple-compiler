@@ -5,20 +5,20 @@
 
 #include "node.h"
 
-void ASTToAssembly(NodeAST* n) {
+int ASTToAssembly(NodeAST* n) {
 	if (n == NULL)
-		return;
+		return 0;
 
 	switch (n->type) {
 	case literal:
 		printf("    mov eax, %d\n", n->data.lit.value);
 		printf("    push eax\n");
-		break;
+		return 1;
 
 	case variable:
 		printf("    mov eax, [%s]\n", n->data.var.name);
 		printf("    push eax\n");
-		break;
+		return 1;
 
 	case function:
 
@@ -27,12 +27,12 @@ void ASTToAssembly(NodeAST* n) {
 			ASTToAssembly(n->data.func.children[1]);
 			printf("    pop eax\n");
 			printf("    mov [%s], eax\n", n->data.func.children[0]->data.var.name);
-			break;
+			return 1;
 		case print:
 			ASTToAssembly(n->data.func.children[0]);
 			printf("    pop eax\n");
 			printf("    call iprintLF\n");
-			break;
+			return 1;
 		case input:
 			printf("    mov edx, 255\n");
 			printf("    mov ecx, sinput\n");
@@ -42,7 +42,7 @@ void ASTToAssembly(NodeAST* n) {
 			printf("    mov eax, sinput\n");
 			printf("    call atoi\n");
 			printf("    mov [%s], eax\n", n->data.func.children[0]->data.var.name);
-			break;
+			return 1;
 		case addn:
 			for (int child = 0; child < numargs[n->data.func.type]; child++) {
 				ASTToAssembly(n->data.func.children[child]);
@@ -51,7 +51,7 @@ void ASTToAssembly(NodeAST* n) {
 			printf("    pop eax\n");
 			printf("    add eax, ebx\n");
 			printf("    push eax\n");
-			break;
+		    return 1;
 		case subn:
 			for (int child = 0; child < numargs[n->data.func.type]; child++) {
 				ASTToAssembly(n->data.func.children[child]);
@@ -60,7 +60,7 @@ void ASTToAssembly(NodeAST* n) {
 			printf("    pop eax\n");
 			printf("    sub eax, ebx\n");
 			printf("    push eax\n");
-			break;
+			return 1;
 		case muln:
 			for (int child = 0; child < numargs[n->data.func.type]; child++) {
 				ASTToAssembly(n->data.func.children[child]);
@@ -69,7 +69,7 @@ void ASTToAssembly(NodeAST* n) {
 			printf("    pop eax\n");
 			printf("    mul ebx\n");
 			printf("    push eax\n");
-			break;
+			return 1;
 		case divn:
 			for (int child = 0; child < numargs[n->data.func.type]; child++) {
 				ASTToAssembly(n->data.func.children[child]);
@@ -79,15 +79,16 @@ void ASTToAssembly(NodeAST* n) {
 			printf("    xor edx, edx\n");
 			printf("    div ebx\n");
 			printf("    push eax\n");
-			break;
+			return 1;
 		}
-		break;
+		return 0;;
 
 	case program:
 		printf("section .data\n");
 		for (int i = 0; i < n->data.prog.num_lines; i++) {
 			if (n->data.prog.children[i]->type == function && n->data.prog.children[i]->data.func.type == var) {
 				printf("    %s: dd 0\n", n->data.prog.children[i]->data.func.children[0]->data.var.name);
+                printf("    ; line %d\n", i+1);
 			}
 		}
 
@@ -100,7 +101,8 @@ void ASTToAssembly(NodeAST* n) {
 		printf("_start:\n");
 
 		for (int i = 0; i < n->data.prog.num_lines; i++) {
-			ASTToAssembly(n->data.prog.children[i]);
+            int print_line = ASTToAssembly(n->data.prog.children[i]);
+            if (print_line > 0) printf("    ; line %d\n", i+1);
 		}
 
 		printf("    call quit\n\n");
@@ -224,8 +226,9 @@ void ASTToAssembly(NodeAST* n) {
         "    ret\n";
 
         printf("%s", code);
-		break;
+		return 1;;
 	}
+    return 0;
 }
 
 #endif

@@ -1,5 +1,5 @@
-Var x;
-Var y;
-Input x;
-Set y x*3-4;
-Print y;
+Var a;
+Var b;
+Input b;
+a = b+3;
+Print a+3;

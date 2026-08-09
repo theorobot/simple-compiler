@@ -12,4 +12,4 @@ There is no error checking, so a syntax error will likely result in the creation
 
 # How to Use
 You write the code to the code.txt file. Then to run, you do "./build.sh", and then "./main". You may need to do "chmod +x build.sh" if it says permission denied.
-To compile the c code, run "gcc main.c -o main".
+To compile the c code, run "gcc main.c -o compiler".
